@@ -1,0 +1,423 @@
+/* ============================================
+   SHIFT CTRL — Production UI
+   ============================================ */
+
+/* ---------- App shell ---------- */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 0 20px;
+  padding-top: max(env(safe-area-inset-top, 0px) + 36px, 44px);
+  padding-bottom: max(env(safe-area-inset-bottom, 0px) + 24px, 32px);
+  min-height: 100dvh;
+  gap: 28px;
+  position: relative;
+}
+
+/* ---------- Settings icon ---------- */
+.settings-btn {
+  position: absolute;
+  top: max(env(safe-area-inset-top, 0px) + 36px, 44px);
+  right: 20px;
+  color: rgba(255, 255, 255, 0.35);
+  transition: color 0.2s;
+  z-index: 10;
+}
+.settings-btn:hover { color: rgba(255, 255, 255, 0.7); }
+
+/* ---------- Header ---------- */
+.header-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+}
+
+.header-sub {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: var(--font-label);
+}
+
+/* ---------- Status row ---------- */
+.status-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.status-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+  font-family: var(--font-label);
+}
+
+/* ---------- Sections ---------- */
+.section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+  text-align: center;
+  font-family: var(--font-label);
+}
+
+/* ---------- Button layout ---------- */
+.btn-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+/* ---------- Glow wrapper ---------- */
+.glow-wrap {
+  position: relative;
+  border-radius: 14px;
+}
+
+.glow-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 14px;
+  padding: 1px;
+  background: var(--glow-gradient);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.glow-wrap:hover::before {
+  opacity: 1;
+}
+
+.glow-wrap--green  { --glow-gradient: linear-gradient(135deg, rgba(34,197,94,0.5), rgba(34,197,94,0) 60%); }
+.glow-wrap--red    { --glow-gradient: linear-gradient(135deg, rgba(239,68,68,0.5), rgba(239,68,68,0) 60%); }
+.glow-wrap--amber  { --glow-gradient: linear-gradient(135deg, rgba(245,158,11,0.5), rgba(245,158,11,0) 60%); }
+.glow-wrap--neutral { --glow-gradient: linear-gradient(135deg, rgba(255,255,255,0.12), transparent 60%); }
+
+/* ---------- Control button ---------- */
+.ctrl-btn {
+  width: 100%;
+  min-height: 58px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.ctrl-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.ctrl-btn:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.ctrl-btn:hover:not(:disabled)::after {
+  opacity: 1;
+}
+
+.ctrl-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.ctrl-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Hover inner gradients */
+.ctrl-btn--on::after   { background: radial-gradient(ellipse at 30% 50%, rgba(34,197,94,0.08), transparent 70%); }
+.ctrl-btn--off::after  { background: radial-gradient(ellipse at 30% 50%, rgba(239,68,68,0.08), transparent 70%); }
+.ctrl-btn--clip::after { background: radial-gradient(ellipse at 30% 50%, rgba(245,158,11,0.08), transparent 70%); }
+
+/* ---------- Button text ---------- */
+.btn-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--font-body);
+  letter-spacing: 0.02em;
+}
+
+.btn-text--muted {
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* ---------- Indicators ---------- */
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot--green {
+  background: #22c55e;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+}
+
+.dot--red {
+  background: #ef4444;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+}
+
+.tri {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px 0 5px 8px;
+  border-color: transparent transparent transparent rgba(245, 158, 11, 0.7);
+  flex-shrink: 0;
+}
+
+.sq {
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 1.5px;
+  flex-shrink: 0;
+}
+
+/* ---------- Status dots ---------- */
+@keyframes dotPulse {
+  0%, 100% { box-shadow: 0 0 4px 0 currentColor; }
+  50% { box-shadow: 0 0 10px 4px currentColor; }
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: all 0.5s ease;
+}
+
+.status-dot--idle {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.status-dot--on {
+  background: #22c55e;
+  color: rgba(34, 197, 94, 0.5);
+  animation: dotPulse 2s ease-in-out infinite;
+}
+
+.status-dot--off {
+  background: #ef4444;
+  color: rgba(239, 68, 68, 0.4);
+  animation: dotPulse 3s ease-in-out infinite;
+}
+
+/* ---------- Divider ---------- */
+.divider-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.divider-text {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.2);
+  white-space: nowrap;
+  font-family: var(--font-label);
+}
+
+/* ---------- Footer ---------- */
+.footer-text {
+  margin-top: auto;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.15);
+  text-align: center;
+  font-family: var(--font-code);
+}
+
+/* ---------- Spinner ---------- */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-top-color: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  flex-shrink: 0;
+}
+
+/* ============================================
+   Background
+   ============================================ */
+
+/* ---------- Aurora ---------- */
+@keyframes auroraDrift {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  25%  { transform: translate(4%, -3%) rotate(0.8deg); }
+  50%  { transform: translate(-2%, 4%) rotate(-0.5deg); }
+  75%  { transform: translate(-4%, -2%) rotate(0.3deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes auroraPulse1 {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes auroraPulse2 {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.55; }
+}
+
+.bg-aurora {
+  position: fixed;
+  inset: -40%;
+  z-index: 0;
+  pointer-events: none;
+  animation: auroraDrift 25s ease-in-out infinite;
+}
+
+.bg-aurora::before {
+  content: '';
+  position: absolute;
+  top: 15%;
+  left: 8%;
+  width: 55%;
+  height: 50%;
+  background: radial-gradient(ellipse, rgba(245, 158, 11, 0.12) 0%, transparent 65%);
+  filter: blur(60px);
+  animation: auroraPulse1 7s ease-in-out infinite;
+}
+
+.bg-aurora::after {
+  content: '';
+  position: absolute;
+  bottom: 15%;
+  right: 8%;
+  width: 45%;
+  height: 40%;
+  background: radial-gradient(ellipse, rgba(6, 182, 212, 0.08) 0%, transparent 65%);
+  filter: blur(60px);
+  animation: auroraPulse2 9s ease-in-out infinite 2s;
+}
+
+/* ---------- Pulsing grid ---------- */
+@keyframes gridBreathe {
+  0%, 100% { opacity: 0.07; }
+  50% { opacity: 0.14; }
+}
+
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(245, 158, 11, 0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 158, 11, 0.4) 1px, transparent 1px);
+  background-size: 44px 44px;
+  animation: gridBreathe 5s ease-in-out infinite;
+  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 35%, rgba(0,0,0,0.7) 0%, transparent 75%);
+  mask-image: radial-gradient(ellipse 75% 65% at 50% 35%, rgba(0,0,0,0.7) 0%, transparent 75%);
+}
+
+/* ============================================
+   PWA / Mobile
+   ============================================ */
+body {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+/* ============================================
+   Settings page
+   ============================================ */
+.settings-input {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 11px 14px;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 14px;
+  width: 100%;
+  outline: none;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.settings-input:focus {
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.06);
+}
+
+.settings-input::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+  font-weight: 400;
+}

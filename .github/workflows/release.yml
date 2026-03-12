@@ -1,0 +1,81 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build standalone
+        run: npm run build
+
+      - name: Prepare release package
+        shell: pwsh
+        run: |
+          $releaseDir = "release/shift-ctrl"
+          New-Item -ItemType Directory -Force -Path $releaseDir
+
+          # Copy standalone server
+          Copy-Item -Recurse ".next/standalone/*" $releaseDir/
+
+          # Copy static assets (required for standalone)
+          New-Item -ItemType Directory -Force -Path "$releaseDir/.next/static"
+          Copy-Item -Recurse ".next/static/*" "$releaseDir/.next/static/"
+
+          # Copy public assets
+          New-Item -ItemType Directory -Force -Path "$releaseDir/public"
+          Copy-Item -Recurse "public/*" "$releaseDir/public/"
+
+          # Copy launcher
+          Copy-Item "launcher.bat" "$releaseDir/"
+
+          # Create default config
+          @"
+          {
+            "SERVER_PORT": 3000,
+            "PROJECTORS": [
+              { "name": "Projector 1", "ip": "192.168.1.101" },
+              { "name": "Projector 2", "ip": "192.168.1.102" },
+              { "name": "Projector 3", "ip": "192.168.1.103" }
+            ],
+            "RESOLUME_IP": "127.0.0.1",
+            "RESOLUME_PORT": 8080
+          }
+          "@ | Out-File -Encoding utf8 "$releaseDir/config.json"
+
+      - name: Download portable Node.js
+        shell: pwsh
+        run: |
+          $nodeVersion = "v22.14.0"
+          $url = "https://nodejs.org/dist/$nodeVersion/node-$nodeVersion-win-x64.zip"
+          Invoke-WebRequest -Uri $url -OutFile "node.zip"
+          Expand-Archive "node.zip" -DestinationPath "node-extract"
+          # Copy just node.exe
+          Copy-Item "node-extract/node-$nodeVersion-win-x64/node.exe" "release/shift-ctrl/"
+
+      - name: Create zip
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "release/shift-ctrl" -DestinationPath "release/SHIFT-CTRL-windows.zip"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/SHIFT-CTRL-windows.zip
+          generate_release_notes: true
