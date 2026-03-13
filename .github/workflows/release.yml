@@ -19,6 +19,9 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Enable long paths
+        run: git config --system core.longpaths true
+
       - name: Install dependencies
         run: npm ci
 
@@ -67,10 +70,11 @@ jobs:
           Expand-Archive "node.zip" -DestinationPath "node-extract"
           Copy-Item "node-extract\node-$nodeVersion-win-x64\node.exe" "release\shift-ctrl\"
 
-      - name: Create zip
-        shell: pwsh
+      - name: Create zip with 7z (handles long paths)
+        shell: cmd
         run: |
-          Compress-Archive -Path "release\shift-ctrl" -DestinationPath "release\SHIFT-CTRL-windows.zip"
+          cd release\shift-ctrl
+          7z a -tzip ..\SHIFT-CTRL-windows.zip . -r
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
